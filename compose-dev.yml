@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  backend:
+    build:
+      context: ./packages/backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./packages/backend:/workspace/app
+    ports:
+      - '${BACKEND_PORT}:${BACKEND_PORT}'
+    stdin_open: true
+    tty: true
+    command: /workspace/entrypoint-dev.sh
+
+  frontend:
+    build:
+      context: ./packages/frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./packages/frontend:/workspace/app
+      # One-way volume to use node_modules from inside image
+      - /workspace/app/node_modules
+    ports:
+      - '${FRONTEND_PORT}:${FRONTEND_PORT}'
+    command: yarn start
+
+  db:
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    volumes:
+      - /tmp/postgres-data:/var/lib/postgresql/data

@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  backend:
+    build: ./packages/backend
+    depends_on:
+      - db
+    environment:
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
+      BACKEND_SECRET_KEY: ${BACKEND_SECRET_KEY}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      PUBLIC_URL: ${PUBLIC_URL}
+      FRONTEND_PORT: ${FRONTEND_PORT}
+    container_name: weewoo-prompt-backend
+
+  frontend:
+    build: ./packages/frontend
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      REACT_APP_BACKEND_PORT: ${BACKEND_PORT}
+      REACT_APP_PUBLIC_URL: ${PUBLIC_URL}
+    depends_on:
+      - backend
+    container_name: weewoo-prompt-frontend
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    container_name: weewoo-prompt-db

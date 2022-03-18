@@ -1,0 +1,7 @@
+FROM node:16-alpine
+WORKDIR /workspace/app/
+COPY package.json yarn.lock /workspace/app/
+RUN yarn install
+COPY . /workspace/app/
+EXPOSE 3000
+CMD yarn start

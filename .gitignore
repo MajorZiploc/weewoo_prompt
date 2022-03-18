@@ -1,0 +1,14 @@
+.env
+.env.bash
+.DS_Store
+.venv
+__pycache__
+build
+db.sqlite3
+node_modules
+npm-debug.log*
+screenshots
+venv.bak
+videos
+yarn-debug.log*
+yarn-error.log*
