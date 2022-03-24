@@ -21,6 +21,14 @@ class Data {
     localStorage.setItem('refreshToken', v);
   }
 
+  getUserName() {
+    return localStorage.getItem('userName');
+  }
+
+  setUserName(u) {
+    localStorage.setItem('userName', u);
+  }
+
   async refreshAuth() {
     return axios
       .post(

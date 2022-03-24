@@ -27,6 +27,7 @@ import { Alert } from '@material-ui/lab';
 import React from 'react';
 import { AddBoxTwoTone, EditTwoTone } from '@material-ui/icons';
 import { toKeyValArray } from '../utils';
+import DataContext from '../context/DataContext';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -97,10 +98,12 @@ const GenericCrudTable = ({
     severity: 'error',
   });
   const [editMode, setEditMode] = React.useState(false);
+  const [myListMode, setMyListMode] = React.useState(false);
   const componentMounted = React.useRef(true);
   const [models, setModels] = React.useState([]);
   const [enteredModel, setEnteredModel] = React.useState(defaultModel);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const data = React.useContext(DataContext);
 
   let modelCount = 0;
 
@@ -198,9 +201,8 @@ const GenericCrudTable = ({
   };
 
   const handleSearch = () => {
-    const filtered = models.filter(item =>
-      searchTerm !== '' ? toKeyValArray(item).some(kv => (kv.value + '').toLowerCase().includes(searchTerm)) : true
-    );
+    var filtered = models.filter(item => searchTerm !== '' ? toKeyValArray(item).some(kv => (kv.value + '').toLowerCase().includes(searchTerm)) : true);
+    filtered = filtered.filter(item => myListMode ? toKeyValArray(item).some(kv => kv.key === 'creator' && kv.value === data.getUserName()) : true);
     modelCount = filtered.length;
     return filtered;
   };
@@ -278,6 +280,17 @@ const GenericCrudTable = ({
               onChange={_e => {
                 const newEditMode = !editMode;
                 setEditMode(newEditMode);
+              }}
+            />
+            <FormControlLabel
+              value='start'
+              control={<Switch color='primary' />}
+              label='My List'
+              labelPlacement='start'
+              checked={myListMode}
+              onChange={_e => {
+                const newMyListMode = !myListMode;
+                setMyListMode(newMyListMode);
               }}
             />
             {editMode && (
