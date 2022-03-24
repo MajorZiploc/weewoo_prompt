@@ -27,7 +27,6 @@ import { Alert } from '@material-ui/lab';
 import React from 'react';
 import { AddBoxTwoTone, EditTwoTone, DeleteTwoTone } from '@material-ui/icons';
 import { toKeyValArray } from '../utils';
-import DataContext from '../context/DataContext';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -106,7 +105,6 @@ const GenericCrudTable = ({
   const [models, setModels] = React.useState([]);
   const [enteredModel, setEnteredModel] = React.useState(defaultModel);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const data = React.useContext(DataContext);
 
   let modelCount = 0;
 
