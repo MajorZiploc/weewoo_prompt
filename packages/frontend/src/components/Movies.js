@@ -19,6 +19,10 @@ const Movies = () => {
       isValid = false;
       errorMessage += 'Year must be a number.';
     }
+    if (enteredMovie.rating === '' || isNaN(Number(enteredMovie.rating)) || enteredMovie.rating < 1 || enteredMovie.rating > 10) {
+      isValid = false;
+      errorMessage += 'Rating must be a number between 1 and 10.';
+    }
     return { isValid, errorMessage };
   };
 
@@ -29,14 +33,17 @@ const Movies = () => {
       title: '',
       genre: '',
       year: '',
+      rating: '',
     },
     modelId: 'id',
-    modelFields: ['title', 'genre', 'year'],
+    modelFields: ['title', 'genre', 'year', 'rating'],
     modelData: {
       postModel: data.postMovie.bind(data),
       putModel: data.putMovie.bind(data),
       getModels: data.getMovies.bind(data),
+      deleteModel: data.deleteMovie.bind(data),
     },
+    myListFilter: myListMode => item => myListMode ? item.creator === data.getUserName() : true,
     validatedModel: validatedMovie,
     tableId: 'moviesTable',
   };

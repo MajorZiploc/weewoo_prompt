@@ -25,8 +25,9 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React from 'react';
-import { AddBoxTwoTone, EditTwoTone } from '@material-ui/icons';
+import { AddBoxTwoTone, EditTwoTone, DeleteTwoTone } from '@material-ui/icons';
 import { toKeyValArray } from '../utils';
+import DataContext from '../context/DataContext';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -61,6 +62,9 @@ const useStyles = makeStyles(theme =>
       display: 'flex',
       flexDirection: 'column',
     },
+    delete: {
+      margin: '0 0 0 35%'
+    },
   })
 );
 
@@ -75,13 +79,13 @@ const tableSort = (contents, sortColumn, sortDesc) => {
   return typeof contents[0][key] !== 'boolean' ? sortedContents : sortedContents.reverse();
 };
 
-// TODO: add delete functionality
 const GenericCrudTable = ({
   modelName,
   defaultModel,
   modelId = 'id',
   modelFields,
   modelData,
+  myListFilter,
   validatedModel,
   tableId,
 }) => {
@@ -97,10 +101,12 @@ const GenericCrudTable = ({
     severity: 'error',
   });
   const [editMode, setEditMode] = React.useState(false);
+  const [myListMode, setMyListMode] = React.useState(false);
   const componentMounted = React.useRef(true);
   const [models, setModels] = React.useState([]);
   const [enteredModel, setEnteredModel] = React.useState(defaultModel);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const data = React.useContext(DataContext);
 
   let modelCount = 0;
 
@@ -125,6 +131,14 @@ const GenericCrudTable = ({
       setModels(modelsResult);
     }
   };
+
+  const DeleteModel = async () => {
+    await modelData.deleteModel(enteredModel[modelId]).catch(_e => {
+      openAlert({ display: true, message: 'Failed to delete model', severity: 'error'});
+    })
+    UpdateModels();
+    closeModal();
+  }
 
   const openAlert = alertSettings => {
     if (componentMounted.current) {
@@ -198,9 +212,8 @@ const GenericCrudTable = ({
   };
 
   const handleSearch = () => {
-    const filtered = models.filter(item =>
-      searchTerm !== '' ? toKeyValArray(item).some(kv => (kv.value + '').toLowerCase().includes(searchTerm)) : true
-    );
+    var filtered = models.filter(item => searchTerm !== '' ? toKeyValArray(item).some(kv => (kv.value + '').toLowerCase().includes(searchTerm)) : true);
+    filtered = filtered.filter(item => myListFilter(myListMode)(item))
     modelCount = filtered.length;
     return filtered;
   };
@@ -234,6 +247,11 @@ const GenericCrudTable = ({
       <Dialog onClose={closeModal} aria-labelledby='customized-dialog-title' open={showModal}>
         <DialogTitle id='customized-dialog-title'>
           {enteredModel && enteredModel[modelId] !== 0 ? 'Edit' : 'Add'} {modelName}:
+          <Tooltip title='Delete Model'>
+            <IconButton className={classes.delete} onClick={async () => await DeleteModel()}>
+              <DeleteTwoTone color='secondary' />
+            </IconButton>
+          </Tooltip>
         </DialogTitle>
         <DialogContent dividers className={classes.dialogContent}>
           {modelFields.map((mf, i) => {
@@ -278,6 +296,17 @@ const GenericCrudTable = ({
               onChange={_e => {
                 const newEditMode = !editMode;
                 setEditMode(newEditMode);
+              }}
+            />
+            <FormControlLabel
+              value='start'
+              control={<Switch color='primary' />}
+              label='My List'
+              labelPlacement='start'
+              checked={myListMode}
+              onChange={_e => {
+                const newMyListMode = !myListMode;
+                setMyListMode(newMyListMode);
               }}
             />
             {editMode && (

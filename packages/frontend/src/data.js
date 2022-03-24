@@ -21,6 +21,14 @@ class Data {
     localStorage.setItem('refreshToken', v);
   }
 
+  getUserName() {
+    return localStorage.getItem('userName');
+  }
+
+  setUserName(u) {
+    localStorage.setItem('userName', u);
+  }
+
   async refreshAuth() {
     return axios
       .post(
@@ -172,6 +180,24 @@ class Data {
   async patchMovie(id, movie) {
     return await this._patchMovieHelper(id, movie).catch(
       async _e => await this.refreshToken().then(async _r => await this._patchMovieHelper(id, movie))
+    );
+  }
+
+  async _deleteMovieHelper(id) {
+    return axios
+      .delete(this.baseUrl + `/api/v1/movies/${id}/`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${this.getAccessToken()}`,
+        },
+      })
+      .then(r => r.data);
+  }
+
+  async deleteMovie(id) {
+    return await this._deleteMovieHelper(id).catch(
+      async _e => await this.refreshToken().then(async _r => await this._deleteMovieHelper(id))
     );
   }
 

@@ -60,6 +60,7 @@ const Login = () => {
         );
       if (data.getAccessToken()) {
         setIsLogined(true);
+        data.setUserName(loginCreds.username)
       }
     } else {
       const errorMessage = `Missing the following fields: ${toKeyValArray(loginCreds)
