@@ -36,6 +36,7 @@ const Movies = () => {
       postModel: data.postMovie.bind(data),
       putModel: data.putMovie.bind(data),
       getModels: data.getMovies.bind(data),
+      deleteModel: data.deleteMovie.bind(data),
     },
     validatedModel: validatedMovie,
     tableId: 'moviesTable',
