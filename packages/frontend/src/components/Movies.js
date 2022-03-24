@@ -43,6 +43,7 @@ const Movies = () => {
       getModels: data.getMovies.bind(data),
       deleteModel: data.deleteMovie.bind(data),
     },
+    myListFilter: myListMode => item => myListMode ? item.creator === data.getUserName() : true,
     validatedModel: validatedMovie,
     tableId: 'moviesTable',
   };

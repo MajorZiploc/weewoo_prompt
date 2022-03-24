@@ -79,13 +79,13 @@ const tableSort = (contents, sortColumn, sortDesc) => {
   return typeof contents[0][key] !== 'boolean' ? sortedContents : sortedContents.reverse();
 };
 
-// TODO: add delete functionality
 const GenericCrudTable = ({
   modelName,
   defaultModel,
   modelId = 'id',
   modelFields,
   modelData,
+  myListFilter,
   validatedModel,
   tableId,
 }) => {
@@ -213,7 +213,7 @@ const GenericCrudTable = ({
 
   const handleSearch = () => {
     var filtered = models.filter(item => searchTerm !== '' ? toKeyValArray(item).some(kv => (kv.value + '').toLowerCase().includes(searchTerm)) : true);
-    filtered = filtered.filter(item => myListMode ? toKeyValArray(item).some(kv => kv.key === 'creator' && kv.value === data.getUserName()) : true);
+    filtered = filtered.filter(item => myListFilter(myListMode)(item))
     modelCount = filtered.length;
     return filtered;
   };
