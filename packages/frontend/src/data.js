@@ -185,7 +185,7 @@ class Data {
 
   async _deleteMovieHelper(id) {
     return axios
-      .delete(this.baseUrl + `/api/v1/movies/${id}`, {
+      .delete(this.baseUrl + `/api/v1/movies/${id}/`, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
